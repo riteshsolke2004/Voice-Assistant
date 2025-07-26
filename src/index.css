@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bgimg {
+  background-image: url('./public/video.mp4'); /* Ensure correct path */
+  background-size: cover;
+  background-position: center;
+  
+}
