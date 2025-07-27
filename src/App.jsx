@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import './App.css'
+import './App.css';
+import bg from './assets/Ai.jpg'; // ✅ Importing image
+
 const App = () => {
   const [commands] = useState(true);
   const [texts, setTexts] = useState("");
@@ -54,14 +56,12 @@ const App = () => {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
 
-    // Event listener for speech result
     recognition.onresult = (event) => {
       const text = event.results[0][0].transcript.toLowerCase();
       setTexts(text);
       handleCommands(text);
     };
 
-    // Error handler for speech recognition
     recognition.onerror = (event) => {
       const message = `Error occurred: ${event.error}`;
       setResponse(message);
@@ -72,41 +72,48 @@ const App = () => {
     recognition.start();
   };
 
-  // Automatically reset listening state after timeout
   useEffect(() => {
     let timeout;
     if (isListening) {
       timeout = setTimeout(() => {
         setISListening(false);
-      }, 10000); // 10 seconds timeout
+      }, 10000); // 10 seconds
     }
-    return () => clearTimeout(timeout); // Cleanup on unmount
+    return () => clearTimeout(timeout);
   }, [isListening]);
 
   return (
-    <div className='w-screen h-screen bgimg flex flex-col gap-6 items-center justify-center'>
-      <h1 className='text-6xl font-extrabold text-black-600'>Voice Assistance!</h1>
-      <p className='text-md font-semibold text-black'>
-        {commands ? "Please give me a command" : "Processing your commands"}
+    <div
+      className='w-screen h-screen flex flex-col gap-6 items-center justify-center'
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <h1 className='text-6xl font-extrabold text-white drop-shadow-lg'>Voice Assistant!</h1>
+      <p className='text-md font-semibold text-white bg-black/40 px-4 py-2 rounded-xl'>
+        {commands ? "Please give me a command" : "Processing your command"}
       </p>
 
-      <div className='flex items-center w-justify-center'>
+      <div className='flex items-center justify-center'>
         <button
           onClick={startListening}
-          className='px-6 py-2 bg-black rounded-lg text-white'
+          className='px-6 py-2 bg-black rounded-lg text-white hover:bg-gray-800 transition'
         >
           {isListening ? "Listening..." : "Start Listening"}
         </button>
       </div>
 
-      <div className='bg-white p-5 shadow-lg h-auto rounded-xl space-y-5'>
-        <h2 className='text-xl'>
-          <span className='text-green-600'>Recognition Speech:</span>
+      <div className='bg-white p-5 shadow-lg h-auto rounded-xl space-y-5 w-[90%] max-w-md mt-6 bg-opacity-90'>
+        <h2 className='text-xl font-medium'>
+          <span className='text-green-600 font-bold'>Recognition Speech:</span>
           <br />
           {texts}
         </h2>
         <h4 className='text-lg'>
-          <span className='text-orange-600'>Response:</span> {response}
+          <span className='text-orange-600 font-bold'>Response:</span> {response}
         </h4>
       </div>
     </div>
